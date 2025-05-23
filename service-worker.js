@@ -46,10 +46,21 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        return response || caches.match(event.request);
+        // If the response is valid, return it and update the cache
+        if (response && response.status === 200) {
+          let responseClone = response.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+          return response;
+        }
+        // If the response is invalid (e.g., 404), try to return from cache
+        return caches.match(event.request);
       })
       .catch(() => {
+        // If the network is unavailable, return from cache
         return caches.match(event.request);
       })
   );
 });
+
