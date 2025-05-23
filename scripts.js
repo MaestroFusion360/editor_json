@@ -2,7 +2,7 @@
 let data = [];
 let filteredData = [];
 let selectedId = null;
-const VERSION = '0.3.1';
+const VERSION = '0.3.2';
 
 // Display list of entries
 function renderEntries() {
@@ -174,6 +174,7 @@ function clearAll() {
     if (!confirm('Clear all data?')) return;
     data = [];
     filteredData = [];
+    localStorage.removeItem('postprocessors_data');
     clearForm();
 }
 
