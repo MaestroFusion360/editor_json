@@ -2,7 +2,7 @@
 let data = [];
 let filteredData = [];
 let selectedId = null;
-const VERSION = '0.2.2';
+const VERSION = '0.3.1';
 
 // Display list of entries
 function renderEntries() {
@@ -107,6 +107,7 @@ function addNewEntry() {
     selectEntry(newId.toString());
     document.getElementById('search').value = '';
     filterData();
+    saveToLocalStorage();
 }
 
 // Save changes
@@ -131,8 +132,10 @@ function saveChanges() {
         entry.zip_url = document.getElementById('edit-zip_url').value;
         
         renderEntries();
+        saveToLocalStorage();
         alert('Changes saved!');
     }
+
 }
 
 // Delete selected entry
@@ -145,6 +148,7 @@ function deleteEntry() {
     
     clearForm();
     renderEntries();
+    saveToLocalStorage();
 }
 
 // Clear form
@@ -200,6 +204,8 @@ function saveData() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    saveToLocalStorage()
+    alert('Data saved as posts_updated.json');
 }
 
 // Show statistics of post-processors
@@ -303,11 +309,38 @@ function closeAbout() {
   document.getElementById('aboutModal').classList.remove('active');
 }
 
+// Dark mode toggle
 function toggleDarkMode() {
   document.body.classList.toggle('dark-theme');
 }
 
+// Load data from local storage
+function loadFromLocalStorage() {
+    try {
+        const stored = localStorage.getItem('postprocessors_data');
+        if (stored) {
+            data = JSON.parse(stored);
+            filteredData = [...data];
+        }
+    } catch (e) {
+        console.error('Error loading data from localStorage:', e);
+        data = [];
+        filteredData = [];
+    }
+}
+
+// Save data to local storage
+function saveToLocalStorage() {
+    try {
+        localStorage.setItem('postprocessors_data', JSON.stringify(data));
+    } catch (e) {
+        console.error('Error saving data to localStorage:', e);
+    }
+}
+
+// Wait for the DOM to be fully loaded before running the script
 document.addEventListener('DOMContentLoaded', function() {
+    loadFromLocalStorage();
     renderEntries();
     clearForm();
 
@@ -317,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
+// Handle file selection when the user chooses a file
 document.getElementById('fileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -327,6 +360,7 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
     reader.onerror = function() {
         alert('Error reading file: ' + reader.error.message);
         console.error('FileReader error:', reader.error);
+        e.target.value = '';
     };
     
     reader.onload = function(e) {
@@ -334,17 +368,20 @@ document.getElementById('fileInput').addEventListener('change', function(e) {
             const json = JSON.parse(e.target.result);
             data = json.post_processors || [];
             filteredData = [...data];
+            saveToLocalStorage();
             renderEntries();
             alert(`Successfully uploaded ${data.length} entries`);
         } catch (error) {
             alert('Error reading file: ' + error.message);
             console.error(error);
         }
+
+        e.target.value = '';
     };
     
     reader.readAsText(file);
-
 });
+
 
 // Service Worker registration
 if ('serviceWorker' in navigator) {
