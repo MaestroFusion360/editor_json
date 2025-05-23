@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Editor</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="assets/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="theme-color" content="#ffffff">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="top-bar">
+    <div class="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+    <h1 class="title">JSON Editor</h1>
+  </header>
+        <!-- Edit form -->
+        <div class="edit-form">
+            <div class="form-row">
+                <label>Name:</label>
+                <input type="text" id="edit-name">
+            </div>
+            <div class="form-row">
+                <label>Link to archive:</label>
+                <input type="text" id="edit-zip_url">
+            </div>
+            <div class="form-row">
+                <label>Category:</label>
+                <select id="edit-category">
+                    <option value="NX">NX</option>
+                    <option value="Fusion360">Fusion360</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>CNC:</label>
+                <select id="edit-cnc">
+                    <option value="Fanuc">Fanuc</option>
+                    <option value="Siemens">Siemens</option>
+                    <option value="Heidenhain">Heidenhain</option>
+                    <option value="Haas">Haas</option>
+                    <option value="Mazak">Mazak</option>
+                    <option value="Okuma">Okuma</option>
+                    <option value="BaltSystem">BaltSystem</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Type:</label>
+                <select id="edit-type">
+                    <option value="milling">Mill</option>
+                    <option value="turning">Turn</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>License:</label>
+                <select id="edit-license">
+                    <option value="free">Free</option>
+                    <option value="paid">Paid</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label>Description EN:</label>
+                <textarea id="edit-desc_en" rows="2"></textarea>
+            </div>
+            <div class="form-row">
+                <label>Description RU:</label>
+                <textarea id="edit-desc_ru" rows="2"></textarea>
+            </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="action-buttons">
+            <button onclick="addNewEntry()">Add</button>
+            <button onclick="saveChanges()">Save Changes</button>
+            <button onclick="deleteEntry()" class="danger">Remove</button>
+        </div>
+
+        <!-- Search -->
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search by name or description..." oninput="filterData()">
+        </div>
+
+        <!-- List of entries -->
+        <div class="entries-list" id="entriesList"></div>
+    </div>
+
+    <nav class="side-menu" id="sideMenu">
+    <div class="menu-header">
+        <h3>JSON Editor</h3>
+        <p class="version-info"></p>
+    </div>
+
+    <!-- Menu items -->
+    <div class="menu-body">
+        <div class="menu-item" onclick="loadData()">Open</div>
+        <div class="menu-item" onclick="saveData()">Save</div>
+        <div class="menu-item" onclick="clearAll()">Clear</div>
+        <div class="menu-item" onclick="showStats()">Show Statistics</div>
+        <div class="menu-item" onclick="showAbout()">About</div>
+    </div>
+
+    <div class="menu-footer">
+        <label class="switch">
+            <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+            <span class="slider round"></span>
+            <span class="switch-label">Dark Theme</span>
+        </label>
+    </div>
+    </nav>
+
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <!-- Message Box -->
+  <div class="modal" id="aboutModal">
+    <div class="modal-content">
+      <h3>About JSON Editor</h3>
+      <p class="version-info"></p>
+      <br>
+      <p>Manage your JSON data easily.</p>
+      <br>
+      <p>Author: MaestroFusion360</p>
+      <button onclick="closeAbout()">Close</button>
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" style="display:none" accept=".json">
+  <script src="config.js"></script>
+  <script src="scripts.js"></script>
+
+</body>
+</html>
