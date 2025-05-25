@@ -9,7 +9,6 @@
     <link rel="apple-touch-icon" href="assets/icon-192.png">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <meta name="theme-color" content="#ffffff">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -23,22 +22,22 @@
         <div class="edit-form">
             <div class="form-row">
                 <label>Name:</label>
-                <input type="text" id="edit-name">
+                <input type="text" id="edit-name" placeholder="Enter name" title="Name">
             </div>
             <div class="form-row">
                 <label>Link to archive:</label>
-                <input type="text" id="edit-zip_url">
+                <input type="text" id="edit-zip_url" placeholder="Enter archive link" title="Link to archive">
             </div>
             <div class="form-row">
                 <label>Category:</label>
-                <select id="edit-category">
+                <select id="edit-category" title="Category">
                     <option value="NX">NX</option>
                     <option value="Fusion360">Fusion360</option>
                 </select>
             </div>
             <div class="form-row">
                 <label>CNC:</label>
-                <select id="edit-cnc">
+                <select id="edit-cnc" title="CNC">
                     <option value="Fanuc">Fanuc</option>
                     <option value="Siemens">Siemens</option>
                     <option value="Heidenhain">Heidenhain</option>
@@ -50,25 +49,25 @@
             </div>
             <div class="form-row">
                 <label>Type:</label>
-                <select id="edit-type">
+                <select id="edit-type" title="Type">
                     <option value="milling">Mill</option>
                     <option value="turning">Turn</option>
                 </select>
             </div>
             <div class="form-row">
                 <label>License:</label>
-                <select id="edit-license">
+                <select id="edit-license" title="License">
                     <option value="free">Free</option>
                     <option value="paid">Paid</option>
                 </select>
             </div>
             <div class="form-row">
                 <label>Description EN:</label>
-                <textarea id="edit-desc_en" rows="2"></textarea>
+                <textarea id="edit-desc_en" rows="2" title="Description EN" placeholder="Enter description in English"></textarea>
             </div>
             <div class="form-row">
                 <label>Description RU:</label>
-                <textarea id="edit-desc_ru" rows="2"></textarea>
+                <textarea id="edit-desc_ru" rows="2" title="Description RU" placeholder="Enter description in Russian"></textarea>
             </div>
         </div>
 
@@ -127,7 +126,7 @@
     </div>
   </div>
 
-  <input type="file" id="fileInput" style="display:none" accept=".json">
+  <input type="file" id="fileInput" accept=".json" title="Select JSON file">
   <script src="config.js"></script>
   <script src="scripts.js"></script>
 

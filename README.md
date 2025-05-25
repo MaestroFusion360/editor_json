@@ -1,7 +1,8 @@
 # JSON Editor for Post Processors
 
-A simple web-based editor for managing CNC post processor JSON files.
+A **Progressive Web App (PWA)** for managing CNC post-processor JSON files, designed for seamless integration with Telegram bots like [@postprocessors_bot](https://t.me/postprocessors_bot).
 
+<!-- markdownlint-disable MD033 -->
 <details>
   <summary>Click to see the image</summary>
   <h1 align="center">
@@ -10,7 +11,7 @@ A simple web-based editor for managing CNC post processor JSON files.
   </h1>
 </details>
 
-# Table of Contents
+## Table of Contents
 
 - [Features](#features)
 - [Usage](#usage)
@@ -20,22 +21,22 @@ A simple web-based editor for managing CNC post processor JSON files.
 
 ## Features
 
-* 📝 Edit post processor parameters
-* 💾 Save/load JSON files
-* 🔍 Search by name and description
-* 📱 Responsive interface
-* 📴 Offline mode
+- 📝 Edit post processor parameters
+- 💾 Save/load JSON files
+- 🔍 Search by name and description
+- 📱 Responsive interface
+- 📴 Offline mode
 
 ## Usage
 
-1. Open an existing JSON file (click "📂 Open")
+1. Open an existing JSON file (click "Open")
 2. Edit the parameters:
-   * Link to archive
-   * Category (NX/Fusion360)
-   * CNC type (Fanuc, Siemens, etc.)
-   * Operation type (milling/turning)
-3. Save the changes (click "💾 Save Changes")
-4. Export the file (click "💾 Save")
+   - Link to archive
+   - Category (NX/Fusion360)
+   - CNC type (Fanuc, Siemens, etc.)
+   - Operation type (milling/turning)
+3. Save the changes (click "Save Changes")
+4. Export the file (click "Save")
 
 ## Data Format
 
