@@ -2,7 +2,7 @@
 let data = [];
 let filteredData = [];
 let selectedId = null;
-const VERSION = "0.4.1";
+const VERSION = "0.4.2";
 
 // Display list of entries
 function renderEntries() {
@@ -69,79 +69,147 @@ function filterData() {
   renderEntries();
 }
 
+// Validates the entry form and shows errors if fields are invalid.
+function validateEntryForm() {
+  const name = document.getElementById("edit-name").value.trim();
+  const zipUrl = document.getElementById("edit-zip_url").value.trim();
+  let isValid = true;
+
+  // Clear previous errors
+  document.querySelectorAll(".error-message").forEach(el => el.remove());
+  document.querySelectorAll(".invalid").forEach(el => el.classList.remove("invalid"));
+
+  // Validate Name (required)
+  if (!name) {
+    showFieldError("edit-name", 'The "Name" field is required');
+    isValid = false;
+  }
+
+  // Validate ZIP URL (if provided)
+  if (zipUrl && !isValidUrl(zipUrl)) {
+    showFieldError("edit-zip_url", 'ZIP URL must start with http:// or https://');
+    isValid = false;
+  }
+
+  return isValid;
+}
+
+// Shows an error under a specific field
+function showFieldError(fieldId, message) {
+  const input = document.getElementById(fieldId);
+  input.classList.add("invalid");
+
+  const errorElement = document.createElement("div");
+  errorElement.className = "error-message";
+  errorElement.textContent = message;
+  input.parentNode.appendChild(errorElement);
+}
+
+// Checks if a URL is valid
+function isValidUrl(url) {
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Add a new entry
 function addNewEntry() {
-  const newId =
-    data.length > 0
-      ? Math.max(...data.map((item) => parseInt(item.id))) + 1
-      : 1;
+  // Validate before processing
+  if (!validateEntryForm()) return;
 
-  const baseUrl = typeof config !== "undefined" ? config.BASE_URL || "" : "";
-  const channelId =
-    typeof config !== "undefined" ? config.TELEGRAM_CHANNEL_ID || "" : "";
+  // Generate a safe ID (handles empty data case)
+  const newId = data.length > 0 
+    ? Math.max(...data.map(item => parseInt(item.id) || 0)) + 1 
+    : 1;
 
-  // Get all form values
+  // Get config safely (fallback if `config` is undefined)
+  const baseUrl = (config?.BASE_URL || "").trim();
+  const channelId = (config?.TELEGRAM_CHANNEL_ID || "").trim();
+  const defaultZipUrl = `${baseUrl}${channelId}/`;
+
+  // Collect and trim all form values
   const formFields = {
-    category: document.getElementById("edit-category").value,
-    cnc: document.getElementById("edit-cnc").value,
+    category: document.getElementById("edit-category").value.trim() || "NX",
+    cnc: document.getElementById("edit-cnc").value.trim() || "Fanuc",
     name: document.getElementById("edit-name").value.trim(),
-    type: document.getElementById("edit-type").value,
-    license: document.getElementById("edit-license").value,
+    type: document.getElementById("edit-type").value.trim() || "milling",
+    license: document.getElementById("edit-license").value.trim() || "free",
     desc_en: document.getElementById("edit-desc_en").value.trim(),
     desc_ru: document.getElementById("edit-desc_ru").value.trim(),
-    zip_url: document.getElementById("edit-zip_url").value.trim(),
+    zip_url: document.getElementById("edit-zip_url").value.trim() || defaultZipUrl,
   };
 
-  // Create new entry with fallback values
-  const newEntry = {
-    id: newId.toString(),
-    category: formFields.category || "NX",
-    cnc: formFields.cnc || "Fanuc",
-    name: formFields.name || "New post-processor",
-    type: formFields.type || "milling",
-    license: formFields.license || "free",
-    desc_en: formFields.desc_en || "",
-    desc_ru: formFields.desc_ru || "",
-    zip_url: formFields.zip_url || `${baseUrl}${channelId}/`,
-  };
+  // Validate ZIP URL (if manually provided)
+  if (formFields.zip_url !== defaultZipUrl && !isValidUrl(formFields.zip_url)) {
+    showFieldError("edit-zip_url", "Invalid URL. Must start with http:// or https://");
+    return;
+  }
 
-  // Add to data arrays
+  // Create and save the new entry
+  const newEntry = { id: newId.toString(), ...formFields };
   data.push(newEntry);
   filteredData.push(newEntry);
   selectedId = newId.toString();
 
-  // Update UI
-  selectEntry(newId.toString());
+  // Update UI and storage
+  selectEntry(selectedId);
   document.getElementById("search").value = "";
   filterData();
   saveToLocalStorage();
+
+  showToast("New entry added!");
 }
 
 // Save changes
 function saveChanges() {
-  if (!selectedId) return;
-
-  const name = document.getElementById("edit-name").value;
-  if (!name || name.trim() === "") {
-    alert('The "Name" field is required');
+  if (!selectedId) {
+    showToast("No entry selected!");
     return;
   }
 
-  const entry = data.find((item) => item.id === selectedId);
-  if (entry) {
-    entry.category = document.getElementById("edit-category").value;
-    entry.cnc = document.getElementById("edit-cnc").value;
-    entry.name = name;
-    entry.type = document.getElementById("edit-type").value;
-    entry.license = document.getElementById("edit-license").value;
-    entry.desc_en = document.getElementById("edit-desc_en").value;
-    entry.desc_ru = document.getElementById("edit-desc_ru").value;
-    entry.zip_url = document.getElementById("edit-zip_url").value;
+  // Validate before saving
+  if (!validateEntryForm()) return;
 
-    renderEntries();
-    saveToLocalStorage();
-    alert("Changes saved!");
+  const entry = data.find(item => item.id === selectedId);
+  if (!entry) {
+    showToast("Entry not found!");
+    return;
   }
+
+  // Update entry data (with trimming)
+  entry.category = document.getElementById("edit-category").value.trim();
+  entry.cnc = document.getElementById("edit-cnc").value.trim();
+  entry.name = document.getElementById("edit-name").value.trim();
+  entry.type = document.getElementById("edit-type").value.trim();
+  entry.license = document.getElementById("edit-license").value.trim();
+  entry.desc_en = document.getElementById("edit-desc_en").value.trim();
+  entry.desc_ru = document.getElementById("edit-desc_ru").value.trim();
+  
+  // Validate ZIP URL before saving
+  const newZipUrl = document.getElementById("edit-zip_url").value.trim();
+  if (newZipUrl && !isValidUrl(newZipUrl)) {
+    showFieldError("edit-zip_url", "Invalid URL format");
+    return;
+  }
+  entry.zip_url = newZipUrl;
+
+  // Update UI and storage
+  renderEntries();
+  saveToLocalStorage();
+  showToast("Changes saved!");
+}
+
+// Shows a non-blocking notification
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  setTimeout(() => toast.remove(), 3000);
 }
 
 // Delete selected entry
@@ -193,7 +261,7 @@ function loadData() {
 // Save data to file
 function saveData() {
   if (data.length === 0) {
-    alert("No data to save");
+    showToast("No data to save");
     return;
   }
 
@@ -213,13 +281,13 @@ function saveData() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   saveToLocalStorage();
-  alert("Data saved as posts_updated.json");
+  showToast("Data saved as posts_updated.json");
 }
 
 // Show statistics of post-processors
 function showStats() {
   if (data.length === 0) {
-    alert("No post-processors in database");
+    showToast("No post-processors in database");
     return;
   }
 
@@ -327,6 +395,7 @@ if (savedDarkMode !== null) {
   }
 }
 
+// Toggle dark mode
 function toggleDarkMode() {
   const isDarkMode = document.body.classList.toggle("dark-theme");
   config.DARK_MODE = isDarkMode;
@@ -387,7 +456,7 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
   const reader = new FileReader();
 
   reader.onerror = function () {
-    alert("Error reading file: " + reader.error.message);
+    showToast("Error reading file: " + reader.error.message);
     console.error("FileReader error:", reader.error);
     e.target.value = "";
   };
@@ -399,9 +468,9 @@ document.getElementById("fileInput").addEventListener("change", function (e) {
       filteredData = [...data];
       saveToLocalStorage();
       renderEntries();
-      alert(`Successfully uploaded ${data.length} entries`);
+      showToast(`Successfully uploaded ${data.length} entries`);
     } catch (error) {
-      alert("Error reading file: " + error.message);
+      showToast("Error reading file: " + error.message);
       console.error(error);
     }
 
