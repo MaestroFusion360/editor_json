@@ -2,7 +2,7 @@
 let data = [];
 let filteredData = [];
 let selectedId = null;
-const VERSION = "0.4.2";
+const VERSION = "0.4.3";
 
 // Display list of entries
 function renderEntries() {
@@ -108,8 +108,8 @@ function showFieldError(fieldId, message) {
 // Checks if a URL is valid
 function isValidUrl(url) {
   try {
-    new URL(url);
-    return true;
+    const parsed = new URL(url);
+    return ['http:', 'https:'].includes(parsed.protocol);
   } catch {
     return false;
   }
@@ -286,84 +286,107 @@ function saveData() {
 
 // Show statistics of post-processors
 function showStats() {
-  if (data.length === 0) {
-    showToast("No post-processors in database");
-    return;
-  }
-
-  // Initialize counters
-  const stats = {
-    total: data.length,
-    nx_mill: 0,
-    nx_turn: 0,
-    fusion_mill: 0,
-    fusion_turn: 0,
-    other: 0,
-    free: 0,
-    paid: 0,
-  };
-
-  // Count statistics
-  data.forEach((post) => {
-    const category = (post.category || "").toLowerCase();
-    const postType = (post.type || "").toLowerCase();
-    const license = (post.license || "").toLowerCase();
-
-    // Count by license
-    if (license === "free") stats.free++;
-    else if (license === "paid") stats.paid++;
-
-    // Count by category and type
-    if (category === "nx") {
-      if (postType === "milling") stats.nx_mill++;
-      else if (postType === "turning") stats.nx_turn++;
-    } else if (category === "fusion360") {
-      if (postType === "milling") stats.fusion_mill++;
-      else if (postType === "turning") stats.fusion_turn++;
-    } else {
-      stats.other++;
+  try {
+    if (!data || data.length === 0) {
+      showToast("No post-processors in database");
+      return;
     }
-  });
 
-  // Format the HTML content to match your aboutModal style
-  const statsContent = `
-        <h3 style="text-align: center;">Post-processors Statistics</h3>
-        <div style="text-align: left; margin-left: 20px;">
-            <p>Total: <strong>${stats.total}</strong></p>
-            <br>
-            <h4>By Category</h4>
-            <p>NX Milling: <strong>${stats.nx_mill}</strong></p>
-            <p>NX Turning: <strong>${stats.nx_turn}</strong></p>
-            <p>Fusion 360 Milling: <strong>${stats.fusion_mill}</strong></p>
-            <p>Fusion 360 Turning: <strong>${stats.fusion_turn}</strong></p>
-            <p>Other: <strong>${stats.other}</strong></p>
-            <br>
-            <h4>By License</h4>
-            <p>Free: <strong>${stats.free}</strong></p>
-            <p>Paid: <strong>${stats.paid}</strong></p>
-            <br>
-            <div style="text-align: center;">
-                <button onclick="document.getElementById('statsModal').classList.remove('active')">Close</button>
-            </div>
-        </div>
-    `;
+		// Initialize counters
+		const stats = {
+			total: data.length,
+			nx_mill: 0,
+			nx_turn: 0,
+			nx_router: 0,
+			nx_cutting: 0,
+			nx_additive: 0,
+			nx_setup_sheet: 0,
+			fusion_mill: 0,
+			fusion_turn: 0,
+			fusion_router: 0,
+			fusion_cutting: 0,
+			fusion_additive: 0,
+			fusion_setup_sheet: 0,
+			free: 0,
+			paid: 0,
+		};
 
-  // Get or create modal
-  let modal = document.getElementById("statsModal");
-  if (!modal) {
-    // Create modal if it doesn't exist
-    modal = document.createElement("div");
-    modal.id = "statsModal";
-    modal.className = "modal";
-    modal.innerHTML = `<div class="modal-content">${statsContent}</div>`;
-    document.body.appendChild(modal);
-  } else {
-    // Update existing modal content
-    modal.querySelector(".modal-content").innerHTML = statsContent;
+		// Count statistics
+		data.forEach((post) => {
+			const category = (post.category || "").toLowerCase().trim();
+			const postType = (post.type || "").toLowerCase().trim();
+			const license = (post.license || "").toLowerCase().trim();
+
+			// Count by license
+			if (license === "free") stats.free++;
+			else if (license === "paid") stats.paid++;
+
+			// Count by category and type
+			if (category.includes("nx")) {
+				if (postType.includes("mill")) stats.nx_mill++;
+				else if (postType.includes("turn")) stats.nx_turn++;
+				else if (postType.includes("router")) stats.nx_router++;
+				else if (postType.includes("cutting")) stats.nx_cutting++;
+				else if (postType.includes("additive")) stats.nx_additive++;
+				else if (postType.includes("setup_sheet")) stats.nx_setup_sheet++;
+			} else if (category.includes("fusion")) {
+				if (postType.includes("mill")) stats.fusion_mill++;
+				else if (postType.includes("turn")) stats.fusion_turn++;
+				else if (postType.includes("router")) stats.fusion_router++;
+				else if (postType.includes("cutting")) stats.fusion_cutting++;
+				else if (postType.includes("additive")) stats.fusion_additive++;
+				else if (postType.includes("setup_sheet")) stats.fusion_setup_sheet++;
+			}
+		});
+
+		// Format the HTML content
+		const statsContent = `
+			<h3 style="text-align: center;">Post-processors Statistics</h3>
+			<div style="text-align: left; margin-left: 20px;">
+				<p>Total: <strong>${stats.total}</strong></p>
+				<br>
+				<h4>By Category and Type</h4>
+				<p>NX Milling: <strong>${stats.nx_mill}</strong></p>
+				<p>NX Turning: <strong>${stats.nx_turn}</strong></p>
+				<p>NX Router: <strong>${stats.nx_router}</strong></p>
+				<p>NX Cutting: <strong>${stats.nx_cutting}</strong></p>
+				<p>NX Additive: <strong>${stats.nx_additive}</strong></p>
+				<p>NX Setup Sheet: <strong>${stats.nx_setup_sheet}</strong></p>
+				<p>Fusion 360 Milling: <strong>${stats.fusion_mill}</strong></p>
+				<p>Fusion 360 Turning: <strong>${stats.fusion_turn}</strong></p>
+				<p>Fusion 360 Router: <strong>${stats.fusion_router}</strong></p>
+				<p>Fusion 360 Cutting: <strong>${stats.fusion_cutting}</strong></p>
+				<p>Fusion 360 Additive: <strong>${stats.fusion_additive}</strong></p>
+				<p>Fusion 360 Setup Sheet: <strong>${stats.fusion_setup_sheet}</strong></p>
+				<br>
+				<h4>By License</h4>
+				<p>Free: <strong>${stats.free}</strong></p>
+				<p>Paid: <strong>${stats.paid}</strong></p>
+				<br>
+				<div style="text-align: center;">
+					<button onclick="document.getElementById('statsModal').classList.remove('active')">Close</button>
+				</div>
+			</div>
+		`;
+
+		// Update or create modal
+		let modal = document.getElementById("statsModal");
+		if (!modal) {
+			modal = document.createElement("div");
+			modal.id = "statsModal";
+			modal.className = "modal";
+			modal.innerHTML = `<div class="modal-content">${statsContent}</div>`;
+			document.body.appendChild(modal);
+		} else {
+			modal.querySelector(".modal-content").innerHTML = statsContent;
+		}
+
+    // Show modal
+    modal.classList.add("active");
+  } catch (error) {
+    console.error("Failed to show stats:", error);
+    showToast("Error loading statistics");
   }
-
-  // Show modal
-  modal.classList.add("active");
 }
 
 // Menu functions
