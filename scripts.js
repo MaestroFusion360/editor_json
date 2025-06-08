@@ -328,14 +328,14 @@ function showStats() {
 				else if (postType.includes("router")) stats.nx_router++;
 				else if (postType.includes("cutting")) stats.nx_cutting++;
 				else if (postType.includes("additive")) stats.nx_additive++;
-				else if (postType.includes("setup_sheet")) stats.nx_setup_sheet++;
+				else if (postType.includes("document")) stats.nx_setup_sheet++;
 			} else if (category.includes("fusion")) {
 				if (postType.includes("mill")) stats.fusion_mill++;
 				else if (postType.includes("turn")) stats.fusion_turn++;
 				else if (postType.includes("router")) stats.fusion_router++;
 				else if (postType.includes("cutting")) stats.fusion_cutting++;
 				else if (postType.includes("additive")) stats.fusion_additive++;
-				else if (postType.includes("setup_sheet")) stats.fusion_setup_sheet++;
+				else if (postType.includes("document")) stats.fusion_setup_sheet++;
 			}
 		});
 
