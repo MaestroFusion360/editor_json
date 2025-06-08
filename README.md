@@ -34,7 +34,7 @@ A **Progressive Web App (PWA)** for managing CNC post-processor JSON files, desi
    - Link to archive
    - Category (NX/Fusion360)
    - CNC type (Fanuc, Siemens, etc.)
-   - Operation type (milling/turning)
+   - Operation type (milling, turning, etc)
 3. Save the changes (click "Save Changes")
 4. Export the file (click "Save")
 
