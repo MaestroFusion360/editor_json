@@ -2,7 +2,7 @@
 let data = [];
 let filteredData = [];
 let selectedId = null;
-const VERSION = "0.4.3";
+const VERSION = "0.4.4";
 
 // Display list of entries
 function renderEntries() {
@@ -16,12 +16,21 @@ function renderEntries() {
     }`;
     entryElement.onclick = () => selectEntry(entry.id);
 
+    const typeDisplayNames = {
+      'milling': 'Mill',
+      'turning': 'Turn',
+      'router': 'Router',
+      'cutting': 'Cutting',
+      'additive': 'Additive',
+      'document': 'Setup Sheet'
+    };
+
+    const displayType = typeDisplayNames[entry.type] || entry.type;
+
     entryElement.innerHTML = `
             <div class="entry-name">${entry.name}</div>
             <div class="entry-details">
-                ${entry.category} | ${entry.cnc} | ${
-      entry.type === "milling" ? "Mill" : "Turn"
-    } | ${entry.license}
+                ${entry.category} | ${entry.cnc} | ${displayType} | ${entry.license}
             </div>
             <div class="entry-details">${entry.desc_en || ""}</div>
         `;
