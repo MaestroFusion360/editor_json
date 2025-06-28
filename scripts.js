@@ -2,7 +2,7 @@
 let data = [];
 let filteredData = [];
 let selectedId = null;
-const VERSION = "0.4.4";
+const VERSION = "0.4.5";
 
 // Display list of entries
 function renderEntries() {
@@ -22,6 +22,7 @@ function renderEntries() {
       'router': 'Router',
       'cutting': 'Cutting',
       'additive': 'Additive',
+      'inspection': 'Inspection',
       'document': 'Setup Sheet'
     };
 
@@ -309,12 +310,14 @@ function showStats() {
 			nx_router: 0,
 			nx_cutting: 0,
 			nx_additive: 0,
+      nx_inspection: 0,
 			nx_setup_sheet: 0,
 			fusion_mill: 0,
 			fusion_turn: 0,
 			fusion_router: 0,
 			fusion_cutting: 0,
 			fusion_additive: 0,
+      fusion_inspection: 0,
 			fusion_setup_sheet: 0,
 			free: 0,
 			paid: 0,
@@ -337,6 +340,7 @@ function showStats() {
 				else if (postType.includes("router")) stats.nx_router++;
 				else if (postType.includes("cutting")) stats.nx_cutting++;
 				else if (postType.includes("additive")) stats.nx_additive++;
+        else if (postType.includes("inspection")) stats.fusion_inspection++;
 				else if (postType.includes("document")) stats.nx_setup_sheet++;
 			} else if (category.includes("fusion")) {
 				if (postType.includes("mill")) stats.fusion_mill++;
@@ -344,6 +348,7 @@ function showStats() {
 				else if (postType.includes("router")) stats.fusion_router++;
 				else if (postType.includes("cutting")) stats.fusion_cutting++;
 				else if (postType.includes("additive")) stats.fusion_additive++;
+        else if (postType.includes("inspection")) stats.fusion_inspection++;
 				else if (postType.includes("document")) stats.fusion_setup_sheet++;
 			}
 		});
@@ -360,12 +365,14 @@ function showStats() {
 				<p>NX Router: <strong>${stats.nx_router}</strong></p>
 				<p>NX Cutting: <strong>${stats.nx_cutting}</strong></p>
 				<p>NX Additive: <strong>${stats.nx_additive}</strong></p>
+        <p>NX Inspection: <strong>${stats.nx_inspection}</strong></p>
 				<p>NX Setup Sheet: <strong>${stats.nx_setup_sheet}</strong></p>
 				<p>Fusion 360 Milling: <strong>${stats.fusion_mill}</strong></p>
 				<p>Fusion 360 Turning: <strong>${stats.fusion_turn}</strong></p>
 				<p>Fusion 360 Router: <strong>${stats.fusion_router}</strong></p>
 				<p>Fusion 360 Cutting: <strong>${stats.fusion_cutting}</strong></p>
 				<p>Fusion 360 Additive: <strong>${stats.fusion_additive}</strong></p>
+        <p>Fusion 360 Inspection: <strong>${stats.fusion_inspection}</strong></p>
 				<p>Fusion 360 Setup Sheet: <strong>${stats.fusion_setup_sheet}</strong></p>
 				<br>
 				<h4>By License</h4>

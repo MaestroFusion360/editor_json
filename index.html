@@ -35,19 +35,36 @@
                     <option value="Fusion360">Fusion360</option>
                 </select>
             </div>
+
             <div class="form-row">
                 <label>CNC:</label>
                 <select id="edit-cnc" title="CNC">
-                    <option value="Fanuc">Fanuc</option>
-                    <option value="Siemens">Siemens</option>
-                    <option value="Heidenhain">Heidenhain</option>
-                    <option value="Haas">Haas</option>
-                    <option value="Mazak">Mazak</option>
-                    <option value="Okuma">Okuma</option>
-                    <option value="BaltSystem">BaltSystem</option>
-                    <option value="Other">Other</option>
+                    <optgroup label="Industrial controllers">
+                        <option value="Fanuc">Fanuc</option>
+                        <option value="Siemens">Siemens</option>
+                        <option value="Heidenhain">Heidenhain</option>
+                        <option value="Haas">Haas</option>
+                        <option value="Mazak">Mazak</option>
+                        <option value="Okuma">Okuma</option>
+                        <option value="Mitsubishi">Mitsubishi</option>
+                        <option value="Fagor">Fagor</option>
+                        <option value="Hurco">Hurco</option>
+                        <option value="ProtoTRAK">ProtoTRAK</option>
+                        <option value="BaltSystem">BaltSystem</option>
+                    </optgroup>
+                    <optgroup label="Software-based controllers">
+                        <option value="Centroid">Centroid</option>
+                        <option value="GBRL">GRBL</option>
+                        <option value="Mach">Mach</option>
+                        <option value="LinuxCNC">LinuxCNC</option>
+                        <option value="WinCNC">WinCNC</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                        <option value="Other">Other</option>
+                    </optgroup>
                 </select>
             </div>
+
             <div class="form-row">
                 <label>Type:</label>
                 <select id="edit-type" title="Type">
@@ -56,6 +73,7 @@
                     <option value="router">Router</option>
                     <option value="cutting">Cutting</option>
                     <option value="additive">Additive</option>
+                    <option value="inspection">Inspection</option>
                     <option value="document">Setup Sheet</option>
                 </select>
             </div>
